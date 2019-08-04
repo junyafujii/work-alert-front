@@ -1,0 +1,5 @@
+.vertical-slide {
+    position: relative;
+    top: 20vh;
+    overflow-y: hidden;
+}

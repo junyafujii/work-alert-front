@@ -1,0 +1,22 @@
+<div class="row justify-content-center align-items-center pb-3 px-3 vertical-slide" >
+  <div class="card align-self-center" style="height: 18rem; width: 20rem;">
+    <div class="card-header bg-primary text-white">
+      ログイン
+    </div>
+    <div class="card-body">
+      <form [formGroup]="loginForm">
+        <div>
+          <label>ユーザーＩＤ：<input class="ml-4 form-control" formControlName="userid"></label>
+        </div>
+        <div>
+          <label>パスワード：<input class="ml-4 form-control" formControlName="password"></label>
+        </div>
+        <div>
+          <span class="ml-4"><button class="btn btn-primary" (click)="signIn()">ログイン</button></span>
+          <span class="ml-4"><button class="btn btn-primary" (click)="clearControl()">クリア</button></span>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- <p>(デバッグ用)フォーム入力値：{{loginForm.value | json}}</p> -->
