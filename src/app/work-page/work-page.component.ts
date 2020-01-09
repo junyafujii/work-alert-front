@@ -1,4 +1,5 @@
-import { Component,OnInit } from '@angular/core';
+import { CookieService } from 'ngx-cookie-service';
+import { Component,OnInit,OnDestroy } from '@angular/core';
 import { FormGroup,FormBuilder,Validators } from '@angular/forms'
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
@@ -6,13 +7,15 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { UploadEvent, UploadFile, FileSystemFileEntry, FileSystemDirectoryEntry } from 'ngx-file-drop';
 
 var url = 'http://localhost:8888/';
+// var url = 'http://192.168.1.241:8888/';
+//var url = 'http://localhost:4200/app';
 
 @Component({
   selector: 'app-work-page',
   templateUrl: './work-page.component.html',
   styleUrls: ['./work-page.component.css']
 })
-export class WorkPageComponent implements OnInit{
+export class WorkPageComponent implements OnInit,OnDestroy {
 
   /*↓フォームコントロール用*/
   //フォームグループ
@@ -46,6 +49,7 @@ export class WorkPageComponent implements OnInit{
   classNonActive = "btn btn-info";
 
   constructor(
+    private cookieService: CookieService,
     private http: HttpClient,
     private spinner: NgxSpinnerService,
     private fb: FormBuilder
@@ -58,20 +62,27 @@ export class WorkPageComponent implements OnInit{
   }
 
   /*
-    init
+    コンポーネント開始時の処理
   */
   ngOnInit(){
-    this.http.get(url + "sessionCheck")
+    this.http.post(url + "sessionCheck", JSON.stringify({"UserId": this.cookieService.get('UserID')}))
     .subscribe(data => {
       //セッションがあれば通常処理
-      this.updateChart()
-      this.changeParam()
+      //this.updateChart()
+      //this.changeParam()
     },err => {
       //ファイルチェックのエラー
       if(err.status === 440) {
         alert(err.error);
       }
     });
+  }
+
+  /*
+    コンポーネント破棄前の処理
+  */
+  ngOnDestroy() {
+    this.cookieService.deleteAll();
   }
 
   /*
@@ -102,7 +113,7 @@ export class WorkPageComponent implements OnInit{
             //完了MSG
             alert("取り込みが完了しました。");
             
-            //ローディングアイコン非表示d
+            //ローディングアイコン非表示
             this.spinner.hide();
 
           },err => {
@@ -129,7 +140,7 @@ export class WorkPageComponent implements OnInit{
     グラフのリフレッシュ
   */
   updateChart(){
-    this.http.get(url + "sessionCheck")
+    this.http.post(url + "sessionCheck", JSON.stringify({"UserId": this.cookieService.get('UserID')}))
     .subscribe(data => {
     this.updateBarChart()
     this.updatePieChart()
